@@ -40,6 +40,43 @@
       gap: 20px;
     }
 
+    /* Menu de Navegação com 3 Botões */
+    .nav-buttons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .btn-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 8px;
+      background-color: var(--card-bg);
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-decoration: none;
+      text-align: center;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-nav:hover {
+      border-color: var(--accent-gold);
+      color: var(--accent-gold);
+      transform: translateY(-2px);
+    }
+
+    .btn-nav.active {
+      background-color: var(--accent-gold);
+      color: #0f172a;
+      border-color: var(--accent-gold);
+      font-weight: 700;
+    }
+
     /* Header Banner */
     .header {
       background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
@@ -265,6 +302,13 @@
 
   <div class="container">
     
+    <!-- Botões de Navegação -->
+    <nav class="nav-buttons">
+      <a href="index.html" class="btn-nav active">🧮 Simulador</a>
+      <a href="checklist.html" class="btn-nav">📋 Checklist</a>
+      <a href="aplicacao.html" class="btn-nav">🚀 Aplicação</a>
+    </nav>
+
     <!-- Header -->
     <header class="header">
       <div class="badge">Gestão do Tempo & Capital</div>
