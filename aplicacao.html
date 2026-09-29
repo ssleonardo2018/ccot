@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custo de Oportunidade do Tempo</title>
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --accent-gold: #f59e0b;
+      --accent-blue: #3b82f6;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --input-bg: #0f172a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border: 1px solid var(--card-border);
+      border-left: 5px solid var(--accent-gold);
+      border-radius: 12px;
+      padding: 24px 20px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--accent-gold);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    .header h1 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* Cards */
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 10px;
+    }
+
+    /* Grid do Formulário */
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 480px) {
+      .calc-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    input[type="number"] {
+      width: 100%;
+      background-color: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input[type="number"]:focus {
+      border-color: var(--accent-gold);
+    }
+
+    /* Caixas de Destaque */
+    .result-box {
+      background-color: var(--input-bg);
+      border: 1px dashed var(--accent-gold);
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .result-box .val-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .result-box .val-number {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--accent-gold);
+      margin-top: 4px;
+    }
+
+    .question-box {
+      background-color: var(--input-bg);
+      border-left: 3px solid var(--accent-gold);
+      padding: 12px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 12px;
+      font-size: 0.85rem;
+      font-style: italic;
+      color: #cbd5e1;
+    }
+
+    .sim-result {
+      background-color: var(--input-bg);
+      border-left: 3px solid var(--accent-blue);
+      padding: 12px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.85rem;
+      color: #cbd5e1;
+    }
+
+    /* Listas */
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .step-item {
+      display: flex;
+      gap: 12px;
+      background-color: var(--input-bg);
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+    }
+
+    .step-icon {
+      font-size: 1.2rem;
+      display: flex;
+      align-items: flex-start;
+      padding-top: 2px;
+    }
+
+    .step-content h4 {
+      font-size: 0.9rem;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .step-content p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      padding: 10px 0 20px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="badge">Método Prático</div>
+      <h1>Custo de Oportunidade do Tempo</h1>
+      <p>Aplicar o conceito no dia a dia exige transformar um cálculo matemático em um filtro mental para decisões cotidianas.</p>
+    </header>
+
+    <!-- 1. Régua da Hora Líquida -->
+    <section class="card">
+      <div class="card-title">
+        <span>📏</span> 1. Crie a sua "Régua da Hora Líquida"
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px;">
+        Calcule o valor real da sua hora (dividindo sua renda mensal líquida pelas horas efetivamente trabalhadas). Anote esse número e mantenha-o em mente para consultar antes de gastar tempo ou dinheiro.
+      </p>
+
+      <div class="calc-grid">
+        <div class="form-group">
+          <label for="renda">Renda Mensal Líquida (R$)</label>
+          <input type="number" id="renda" value="2500" placeholder="Ex: 2500">
+        </div>
+        <div class="form-group">
+          <label for="horas">Horas Trabalhadas/Mês</label>
+          <input type="number" id="horas" value="160" placeholder="Ex: 160">
+        </div>
+      </div>
+
+      <div class="result-box">
+        <div class="val-label">Sua Hora Líquida Vale:</div>
+        <div class="val-number" id="valorHora">R$ 15,63 / hora</div>
+      </div>
+    </section>
+
+    <!-- 2. Filtre os Gastos de Consumo -->
+    <section class="card">
+      <div class="card-title">
+        <span>🛍️</span> 2. Filtre os Gastos de Consumo ("Preço em Horas de Vida")
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
+        Sempre que quiser comprar um bem não essencial ou supérfluo, divida o preço do produto pelo valor da sua hora.
+      </p>
+
+      <div class="question-box">
+        <strong>A Pergunta:</strong> "Este item vale mesmo o equivalente a X horas (ou dias) de trabalho duro da minha vida?"
+      </div>
+
+      <div class="sim-box" style="display: flex; flex-direction: column; gap: 12px;">
+        <div class="form-group">
+          <label for="precoProduto">Preço do Produto/Desejo (R$)</label>
+          <input type="number" id="precoProduto" value="500" placeholder="Ex: 500">
+        </div>
+
+        <div class="sim-result" id="resultadoConsumo">
+          <strong>Na prática:</strong> Ver um produto de R$ 500,00 não como "quinhentos reais", mas sim como <strong>32,0 horas</strong> do seu tempo de vida dedicado ao trabalho.
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Teste da Delegação -->
+    <section class="card">
+      <div class="card-title">
+        <span>🤝</span> 3. Aplique o Teste da Delegação (Comprar Tempo)
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
+        Analise as tarefas rotineiras do seu dia (faxina, manutenção, passar roupa, contabilidade, tarefas operacionais do trabalho).
+      </p>
+
+      <div class="question-box">
+        <strong>A Pergunta:</strong> "Custa menos contratar alguém/um serviço para fazer isso do que o valor da minha hora?"
+      </div>
+
+      <div class="step-item">
+        <div class="step-icon">💡</div>
+        <div class="step-content">
+          <h4>Na Prática</h4>
+          <p id="textoDelegacao">
+            Se sua hora vale R$ 50 e você pode pagar R$ 25/hora para alguém resolver um problema operacional de 2 horas, delegue. Você economiza energia e ganha 2 horas livres por um custo líquido vantajoso.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Feche o Ciclo da Alavancagem -->
+    <section class="card">
+      <div class="card-title">
+        <span>🔄</span> 4. Feche o Ciclo da Alavancagem
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px;">
+        Delegar tarefas sem propósito destrói o método. O tempo livre obtido deve ser reinvestido:
+      </p>
+
+      <div class="step-list">
+        <div class="step-item">
+          <div class="step-icon">📚</div>
+          <div class="step-content">
+            <h4>Estudo e Desenvolvimento</h4>
+            <p>Cursos, leitura ou aprendizado de habilidades que aumentem sua renda futura.</p>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-icon">🎯</div>
+          <div class="step-content">
+            <h4>Trabalho de Alto Valor</h4>
+            <p>Prospecção de novos clientes ou projetos estratégicos.</p>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-icon">🔋</div>
+          <div class="step-content">
+            <h4>Descanso de Qualidade</h4>
+            <p>Saúde física, mental e tempo com a família para evitar o burnout.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      Custo de Oportunidade do Tempo • Guia Interativo
+    </footer>
+
+  </div>
+
+  <script>
+    const rendaInput = document.getElementById('renda');
+    const horasInput = document.getElementById('horas');
+    const precoInput = document.getElementById('precoProduto');
+    
+    const valorHoraEl = document.getElementById('valorHora');
+    const resultadoConsumoEl = document.getElementById('resultadoConsumo');
+    const textoDelegacaoEl = document.getElementById('textoDelegacao');
+
+    function calcular() {
+      const renda = parseFloat(rendaInput.value) || 0;
+      const horas = parseFloat(horasInput.value) || 1;
+      const preco = parseFloat(precoInput.value) || 0;
+
+      const valorHora = renda / horas;
+      const horasParaProduto = valorHora > 0 ? (preco / valorHora) : 0;
+
+      const valorHoraFmt = valorHora.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+      const precoFmt = preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+      valorHoraEl.innerText = `${valorHoraFmt} / hora`;
+
+      resultadoConsumoEl.innerHTML = `<strong>Na prática:</strong> Ver este item de ${precoFmt} não apenas pelo preço numérico, mas sim como <strong>${horasParaProduto.toFixed(1)} horas</strong> do seu tempo de vida dedicado ao trabalho.`;
+
+      if (valorHora > 0) {
+        const custoTerceiro = (valorHora * 0.5).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        textoDelegacaoEl.innerText = `Se sua hora vale ${valorHoraFmt} e você pode pagar cerca de ${custoTerceiro}/hora para alguém resolver um problema operacional de 2 horas, delegue. Você economiza energia e ganha 2 horas livres por um custo líquido vantajoso.`;
+      }
+    }
+
+    rendaInput.addEventListener('input', calcular);
+    horasInput.addEventListener('input', calcular);
+    precoInput.addEventListener('input', calcular);
+
+    calcular();
+  </script>
+
+</body>
+</html>
