@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matriz de Decisão: Delegar, Automatizar ou Manter</title>
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --accent-gold: #f59e0b;
+      --accent-green: #10b981;
+      --accent-blue: #3b82f6;
+      --accent-purple: #8b5cf6;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --input-bg: #0f172a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border: 1px solid var(--card-border);
+      border-left: 5px solid var(--accent-gold);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--accent-gold);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+
+    .header h1 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .header p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Form Card */
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      background-color: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 12px;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--accent-gold);
+    }
+
+    /* Custom Radio Options */
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .option-btn {
+      display: flex;
+      align-items: center;
+      background-color: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .option-btn:hover {
+      border-color: var(--text-muted);
+    }
+
+    .option-btn input[type="radio"] {
+      margin-right: 12px;
+      accent-color: var(--accent-gold);
+      transform: scale(1.2);
+    }
+
+    .option-text {
+      font-size: 0.85rem;
+      color: #cbd5e1;
+    }
+
+    /* Action Button */
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #000;
+      font-weight: 800;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      padding: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+      transition: transform 0.1s, opacity 0.2s;
+    }
+
+    .btn-submit:active {
+      transform: scale(0.98);
+    }
+
+    /* Result Card */
+    .result-card {
+      display: none;
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+    }
+
+    .badge-auto { background: rgba(59, 130, 246, 0.2); color: var(--accent-blue); border: 1px solid var(--accent-blue); }
+    .badge-deleg { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); border: 1px solid var(--accent-green); }
+    .badge-otim { background: rgba(245, 158, 11, 0.2); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
+    .badge-mant { background: rgba(139, 92, 246, 0.2); color: var(--accent-purple); border: 1px solid var(--accent-purple); }
+
+    .result-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .result-description {
+      font-size: 0.9rem;
+      color: #cbd5e1;
+      margin-bottom: 16px;
+    }
+
+    .action-plan {
+      background-color: var(--input-bg);
+      border-left: 3px solid var(--accent-gold);
+      padding: 12px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.85rem;
+    }
+
+    .action-plan h4 {
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .action-plan p {
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      padding: 10px 0 20px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Header -->
+    <header class="header">
+      <div class="badge">Diagnóstico de Rotina</div>
+      <h1>Checklist de Decisão</h1>
+      <p>Descubra se a sua tarefa deve ser <strong>automatizada, delegada, otimizada ou mantida</strong>.</p>
+    </header>
+
+    <!-- Form -->
+    <form id="checklistForm" class="card">
+      
+      <!-- Tarefa -->
+      <div class="form-group">
+        <label for="nomeTarefa">1. Qual tarefa você quer analisar?</label>
+        <input type="text" id="nomeTarefa" placeholder="Ex: Responder e-mails de orçamento" required>
+      </div>
+
+      <!-- Q1 -->
+      <div class="form-group">
+        <label>2. É repetitiva e tem um passo a passo padronizado?</label>
+        <div class="options-grid">
+          <label class="option-btn">
+            <input type="radio" name="q1" value="sim" required>
+            <span class="option-text">Sim (Segue sempre o mesmo padrão)</span>
+          </label>
+          <label class="option-btn">
+            <input type="radio" name="q1" value="nao">
+            <span class="option-text">Não (Varia muito ou exige criatividade)</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="form-group">
+        <label>3. Quanto tempo você gasta nela por semana?</label>
+        <div class="options-grid">
+          <label class="option-btn">
+            <input type="radio" name="q2" value="pouco" required>
+            <span class="option-text">Menos de 15 minutos</span>
+          </label>
+          <label class="option-btn">
+            <input type="radio" name="q2" value="muito">
+            <span class="option-text">Mais de 1 hora</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="form-group">
+        <label>4. Qual é o impacto direto no seu objetivo/negócio?</label>
+        <div class="options-grid">
+          <label class="option-btn">
+            <input type="radio" name="q3" value="baixo" required>
+            <span class="option-text">Baixo / Operacional (Não gera receita direta)</span>
+          </label>
+          <label class="option-btn">
+            <input type="radio" name="q3" value="alto">
+            <span class="option-text">Alto / Decisivo (Exige sua visão única)</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="form-group">
+        <label>5. Pode ser resolvida por software, IA ou automação?</label>
+        <div class="options-grid">
+          <label class="option-btn">
+            <input type="radio" name="q4" value="sim" required>
+            <span class="option-text">Sim (Ex: planilhas, CRM, disparo automático, IA)</span>
+          </label>
+          <label class="option-btn">
+            <input type="radio" name="q4" value="nao">
+            <span class="option-text">Não (Necessita de toque e intervenção humana)</span>
+          </label>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit">Analisar Estratégia ⚡</button>
+    </form>
+
+    <!-- Result Card -->
+    <div id="resultCard" class="result-card">
+      <div id="resultBadge" class="result-badge">Estratégia Recomendada</div>
+      <h2 id="resultTitle" class="result-title">Estratégia</h2>
+      <p id="resultDesc" class="result-description">Descrição da estratégia...</p>
+      
+      <div class="action-plan">
+        <h4>📋 Plano de Ação Recomendado:</h4>
+        <p id="resultAction">Passo a passo prático para aplicar imediatamente.</p>
+      </div>
+    </div>
+
+    <footer>
+      Checklist de Produtividade • Gestão do Tempo Líquido
+    </footer>
+
+  </div>
+
+  <script>
+    const form = document.getElementById('checklistForm');
+    const resultCard = document.getElementById('resultCard');
+    const resultBadge = document.getElementById('resultBadge');
+    const resultTitle = document.getElementById('resultTitle');
+    const resultDesc = document.getElementById('resultDesc');
+    const resultAction = document.getElementById('resultAction');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const tarefa = document.getElementById('nomeTarefa').value;
+      const q1 = document.querySelector('input[name="q1"]:checked').value;
+      const q2 = document.querySelector('input[name="q2"]:checked').value;
+      const q3 = document.querySelector('input[name="q3"]:checked').value;
+      const q4 = document.querySelector('input[name="q4"]:checked').value;
+
+      let estrategia = '';
+      let badgeClass = '';
+      let titulo = '';
+      let descricao = '';
+      let acao = '';
+
+      if (q2 === 'pouco' && q3 === 'baixo') {
+        estrategia = 'OTIMIZAR / ELIMINAR';
+        badgeClass = 'badge-otim';
+        titulo = 'Otimizar ou Eliminar';
+        descricao = `A tarefa "${tarefa}" consome muito pouco tempo e tem baixo impacto. Não vale a pena gastar energia tentando delegar ou criar automações complexas.`;
+        acao = 'Simplifique o processo, reduza etapas ou simplesmente pare de fazê-la se não trouxer resultados reais.';
+      } else if (q4 === 'sim' && q1 === 'sim') {
+        estrategia = 'AUTOMATIZAR';
+        badgeClass = 'badge-auto';
+        titulo = 'Automatizar com Tecnologia / IA';
+        descricao = `A tarefa "${tarefa}" é altamente repetitiva e pode ser feita por software. Automatizar libera seu tempo permanentemente sem custo variável contínuo.`;
+        acao = 'Mapeie o passo a passo e configure ferramentas de automação (ex: IA, regras de e-mail, plataformas no-code como Zapier ou CRM).';
+      } else if (q3 === 'baixo' || (q1 === 'sim' && q4 === 'nao')) {
+        estrategia = 'DELEGAR';
+        badgeClass = 'badge-deleg';
+        titulo = 'Delegar para Outra Pessoa';
+        descricao = `A tarefa "${tarefa}" exige ação humana, mas não necessita do seu talento único nem da sua decisão estratégica.`;
+        acao = 'Crie um checklist rápido ou grave um vídeo da tela explicando o processo e passe para um membro da equipa ou assistente.';
+      } else {
+        estrategia = 'MANTER';
+        badgeClass = 'badge-mant';
+        titulo = 'Manter Sob Seu Controle';
+        descricao = `A tarefa "${tarefa}" é estratégica e de alto impacto para os seus objetivos. Exige a sua expertise ou julgamento único.`;
+        acao = 'Bloqueie um horário fixo na agenda para executá-la com foco total e sem interrupções.';
+      }
+
+      resultBadge.className = `result-badge ${badgeClass}`;
+      resultBadge.innerText = estrategia;
+      resultTitle.innerText = titulo;
+      resultDesc.innerText = descricao;
+      resultAction.innerText = acao;
+
+      resultCard.style.display = 'block';
+      resultCard.scrollIntoView({ behavior: 'smooth' });
+    });
+  </script>
+
+</body>
+</html>
