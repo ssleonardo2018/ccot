@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora do Custo de Oportunidade do Tempo | Método Thiago Nigro</title>
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --accent-gold: #f59e0b;
+      --accent-green: #10b981;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --input-bg: #0f172a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Header Banner */
+    .header {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border: 1px solid var(--card-border);
+      border-left: 5px solid var(--accent-gold);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--accent-gold);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+
+    .header h1 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      line-height: 1.2;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .header p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Cards */
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    }
+
+    .card h2 {
+      font-size: 1.1rem;
+      color: #fff;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card h2 span {
+      color: var(--accent-gold);
+    }
+
+    p {
+      font-size: 0.9rem;
+      color: #cbd5e1;
+      margin-bottom: 12px;
+    }
+
+    /* Formulario */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-prefix {
+      position: absolute;
+      left: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .form-control {
+      width: 100%;
+      background-color: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 12px 12px 12px 40px;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-control.no-prefix {
+      padding-left: 12px;
+    }
+
+    .form-control:focus {
+      border-color: var(--accent-gold);
+    }
+
+    /* Result Box */
+    .result-box {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(30, 41, 59, 0.8) 100%);
+      border: 1px solid var(--accent-gold);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    .result-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .result-value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--accent-gold);
+      margin-bottom: 4px;
+    }
+
+    .result-sub {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+    }
+
+    /* Comparison Box */
+    .test-box {
+      background-color: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 14px;
+      margin-top: 16px;
+    }
+
+    .test-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent-green);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .test-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.85rem;
+    }
+
+    .test-item:last-child {
+      border-bottom: none;
+    }
+
+    .test-item strong {
+      color: #fff;
+    }
+
+    /* Explanatory Cards */
+    .rule-card {
+      background-color: rgba(15, 23, 42, 0.4);
+      border-left: 3px solid var(--accent-gold);
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .rule-card h3 {
+      font-size: 0.9rem;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .rule-card p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0;
+    }
+
+    /* Callout */
+    .callout {
+      background-color: rgba(245, 158, 11, 0.05);
+      border: 1px dashed var(--accent-gold);
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 0.85rem;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      color: var(--accent-gold);
+      margin-bottom: 4px;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      padding: 10px 0 20px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Header -->
+    <header class="header">
+      <div class="badge">Gestão do Tempo & Capital</div>
+      <h1>Custo de Oportunidade do Tempo</h1>
+      <p>Conceito & Método de <strong>Thiago Nigro (O Primo Rico)</strong></p>
+    </header>
+
+    <!-- Simulação Interativa -->
+    <section class="card">
+      <h2><span>⚡</span> Simulador da Sua Hora Líquida</h2>
+      <p>Insira sua renda mensal e horas trabalhadas para descobrir quanto vale cada hora da sua vida produtiva.</p>
+
+      <div class="form-group">
+        <label for="renda">Renda Mensal Líquida (R$)</label>
+        <div class="input-wrapper">
+          <span class="input-prefix">R$</span>
+          <input type="number" id="renda" class="form-control" value="2500" placeholder="Ex: 2500">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="horas">Horas Trabalhadas no Mês</label>
+        <div class="input-wrapper">
+          <input type="number" id="horas" class="form-control no-prefix" value="160" placeholder="Ex: 160">
+        </div>
+      </div>
+
+      <!-- Resultado Principal -->
+      <div class="result-box">
+        <div class="result-title">Sua Hora Vale Exatamente</div>
+        <div class="result-value" id="valorHora">R$ 15,63</div>
+        <div class="result-sub" id="horasDiarias">~ R$ 125,00 por dia (8h)</div>
+      </div>
+
+      <!-- Simulação de Compras / Decisão -->
+      <div class="test-box">
+        <div class="test-title">💡 Matriz de Decisão na Prática</div>
+        
+        <div class="test-item">
+          <span>Celular de R$ 2.000,00</span>
+          <strong id="custoCelular">128 horas de vida</strong>
+        </div>
+
+        <div class="test-item">
+          <span>Delivery / Lanche (R$ 50,00)</span>
+          <strong id="custoLanche">3,2 horas de trabalho</strong>
+        </div>
+
+        <div class="test-item">
+          <span>Teto para Delegar Tarefa (1h)</span>
+          <strong id="tetoDelegar" style="color: var(--accent-green);">Até R$ 15,63</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- Explicação Conceitual -->
+    <section class="card">
+      <h2><span>📚</span> Como Funciona o Método</h2>
+      <p>
+        Para Thiago Nigro, o dinheiro é um recurso multiplicável, enquanto o tempo é único e finito. Quando você faz algo para "economizar", você está pagando por aquilo com suas horas de vida.
+      </p>
+
+      <div class="rule-card">
+        <h3>1. Regra da Delegação</h3>
+        <p>Se o custo de contratar alguém para fazer uma tarefa for menor que o valor da sua hora, <strong>pague para fazerem</strong> e libere seu tempo.</p>
+      </div>
+
+      <div class="rule-card">
+        <h3>2. Regra do Preço em Vida</h3>
+        <p>Antes de comprar algo, divida o preço pelo valor da sua hora. Pergunte-se: <em>"Vale a pena trabalhar X dias por este produto?"</em></p>
+      </div>
+
+      <div class="rule-card">
+        <h3>3. Regra da Alavancagem</h3>
+        <p>O tempo livre ganho ao delegar <strong>deve ser reinvestido</strong> em estudos, trabalho de alto valor ou descanso estratégico.</p>
+      </div>
+    </section>
+
+    <!-- Alerta importante -->
+    <div class="callout">
+      <div class="callout-title">⚠️ O Alerta da Alavancagem</div>
+      <p style="margin-bottom:0; color:#cbd5e1;">
+        Comprar o tempo dos outros só gera riqueza se o tempo ganho for usado para aprender coisas novas ou produzir mais valor. Usar o tempo livre para redes sociais invalida o método.
+      </p>
+    </div>
+
+    <footer>
+      Simulador baseado nos conceitos de Thiago Nigro • Uso Educativo
+    </footer>
+
+  </div>
+
+  <script>
+    const rendaInput = document.getElementById('renda');
+    const horasInput = document.getElementById('horas');
+
+    const valorHoraEl = document.getElementById('valorHora');
+    const horasDiariasEl = document.getElementById('horasDiarias');
+    const custoCelularEl = document.getElementById('custoCelular');
+    const custoLancheEl = document.getElementById('custoLanche');
+    const tetoDelegarEl = document.getElementById('tetoDelegar');
+
+    function calcular() {
+      const renda = parseFloat(rendaInput.value) || 0;
+      const horas = parseFloat(horasInput.value) || 1;
+
+      const valorHora = renda / horas;
+      const valorDia = valorHora * 8;
+
+      // Atualiza resultado principal
+      valorHoraEl.innerText = `R$ ${valorHora.toFixed(2).replace('.', ',')}`;
+      horasDiariasEl.innerText = `~ R$ ${valorDia.toFixed(2).replace('.', ',')} por dia (8h)`;
+
+      // Atualiza simulações
+      if (valorHora > 0) {
+        const hCelular = 2000 / valorHora;
+        const hLanche = 50 / valorHora;
+
+        custoCelularEl.innerText = `${hCelular.toFixed(1).replace('.', ',')} horas de vida`;
+        custoLancheEl.innerText = `${hLanche.toFixed(1).replace('.', ',')} horas de trabalho`;
+        tetoDelegarEl.innerText = `Até R$ ${valorHora.toFixed(2).replace('.', ',')}`;
+      } else {
+        custoCelularEl.innerText = `0 horas`;
+        custoLancheEl.innerText = `0 horas`;
+        tetoDelegarEl.innerText = `R$ 0,00`;
+      }
+    }
+
+    rendaInput.addEventListener('input', calcular);
+    horasInput.addEventListener('input', calcular);
+
+    // Inicializa cálculo
+    calcular();
+  </script>
+</body>
+</html>
